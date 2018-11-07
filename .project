@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>Gradle_WebProject_Template</name>
-	<comment>Project Gradle_WebProject_Template created by Buildship.</comment>
+	<name>Hibernate_Example</name>
+	<comment>Project Hibernate_Example created by Buildship.</comment>
 	<projects>
 	</projects>
 	<buildSpec>
