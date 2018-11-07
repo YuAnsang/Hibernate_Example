@@ -44,7 +44,6 @@ dependencies {
     compile "org.hibernate:hibernate-entitymanager:${hibernateVersion}"
     compile "com.querydsl:querydsl-jpa:${queryDslVersion}"
     compile "com.querydsl:querydsl-apt:${queryDslVersion}"
-    compile "org.apache.commons:commons-dbcp2:${dbcpVersion}"    
     
     compile "org.slf4j:slf4j-simple:1.7.25"
     compile "org.projectlombok:lombok:1.18.2"
@@ -52,9 +51,10 @@ dependencies {
     compile "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
     compile "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
     
-    compileOnly "javax.servlet:javax.servlet-api:${servletVersion}"
-    compileOnly "javax.servlet.jsp:jsp-api:${jspVersion}"
-    compileOnly "javax.servlet:jstl:${jstlVersion}"
+    providedCompile "javax.servlet:javax.servlet-api:${servletVersion}"
+    providedCompile "javax.servlet.jsp:jsp-api:${jspVersion}"
+    providedCompile "javax.servlet:jstl:${jstlVersion}"
+    providedCompile "org.apache.commons:commons-dbcp2:${dbcpVersion}"
     
     testCompile "junit:junit:${junitVersion}"
 }
@@ -79,5 +79,9 @@ task generateQueryDSL(type: JavaCompile, group: 'build') {
     ]
 }
 compileJava.dependsOn(generateQueryDSL)
+
+clean {
+    delete queryDslOutput
+}
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
