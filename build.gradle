@@ -1,0 +1,83 @@
+plugins {
+    id 'java'
+    id 'war'
+    id 'eclipse-wtp'
+}
+
+description = 'Hibernate Example'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+    jcenter()
+}
+
+ext {
+    springVersion = '4.3.14.RELEASE'
+    springJpaVersion = '1.11.16.RELEASE'
+    servletVersion = '3.1.0'
+    jspVersion = '2.1'
+    jstlVersion = '1.2'
+    jacksonVersion = '2.5.5'
+    junitVersion = '4.12'
+    hibernateVersion = '5.1.16.Final'
+    queryDslVersion = '4.1.4'
+    mysqlVersion = '6.0.5'
+    dbcpVersion = '2.1.1'
+}
+
+dependencies {
+    compile "org.springframework:spring-beans:${springVersion}"
+    compile "org.springframework:spring-context:${springVersion}"
+    compile "org.springframework:spring-context-support:${springVersion}"
+    compile "org.springframework:spring-core:${springVersion}"
+    compile "org.springframework:spring-expression:${springVersion}"
+    compile "org.springframework:spring-web:${springVersion}"
+    compile "org.springframework:spring-webmvc:${springVersion}"
+    compile "org.springframework:spring-orm:${springVersion}"
+    compile "org.springframework:spring-test:${springVersion}"
+    compile "org.springframework.data:spring-data-jpa:${springJpaVersion}"
+    
+    compile "mysql:mysql-connector-java:${mysqlVersion}"
+    compile "org.hibernate:hibernate-core:${hibernateVersion}"
+    compile "org.hibernate:hibernate-entitymanager:${hibernateVersion}"
+    compile "com.querydsl:querydsl-jpa:${queryDslVersion}"
+    compile "com.querydsl:querydsl-apt:${queryDslVersion}"
+    compile "org.apache.commons:commons-dbcp2:${dbcpVersion}"    
+    
+    compile "org.slf4j:slf4j-simple:1.7.25"
+    compile "org.projectlombok:lombok:1.18.2"
+    
+    compile "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+    compile "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
+    
+    compileOnly "javax.servlet:javax.servlet-api:${servletVersion}"
+    compileOnly "javax.servlet.jsp:jsp-api:${jspVersion}"
+    compileOnly "javax.servlet:jstl:${jstlVersion}"
+    
+    testCompile "junit:junit:${junitVersion}"
+}
+
+/**** QueryDSL Class Generate Script ****/
+def queryDslOutput = file("src/main/generated")
+sourceSets {
+    main {
+        java {
+            srcDir queryDslOutput
+        }
+    }
+}
+
+task generateQueryDSL(type: JavaCompile, group: 'build') {
+    source = sourceSets.main.java
+    classpath = configurations.compile
+    destinationDir = queryDslOutput
+    options.compilerArgs = [
+            "-proc:only",
+            "-processor", 'com.querydsl.apt.jpa.JPAAnnotationProcessor,lombok.launch.AnnotationProcessorHider$AnnotationProcessor'
+    ]
+}
+compileJava.dependsOn(generateQueryDSL)
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
